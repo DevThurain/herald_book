@@ -19,8 +19,15 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
+  build_runner: ^2.1.5
   flutter_lints: ^1.0.0
   fluent_ui: ^3.8.0
+  flutter_svg: ^1.0.3
+  retrofit: ^3.0.1
+  dio: ^4.0.4
+  retrofit_generator: ^3.0.1+1
+  pretty_dio_logger: ^1.1.1
+  provider: ^6.0.1
 
 flutter:
   uses-material-design: true
@@ -31,3 +38,17 @@ flutter:
   assets:
     # Add assets from the images directory to the application.
     - assets/images/
+    - assets/svgs/
+
+  fonts:
+    # - family: Poppins
+    #   fonts:
+    #     - asset: assets/fonts/Poppins/Poppins-Regular.ttf
+          #- asset: assets/fonts/Poppins/Poppins-Medium.ttf
+          #weight: 600
+          #- asset: assets/fonts/Poppins-Bold.ttf
+          #weight: 700
+
+    - family: Acient
+      fonts:
+        - asset: assets/fonts/acient/acient.otf
