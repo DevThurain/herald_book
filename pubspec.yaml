@@ -28,6 +28,8 @@ dev_dependencies:
   retrofit_generator: ^3.0.1+1
   pretty_dio_logger: ^1.1.1
   provider: ^6.0.1
+  get_it: ^7.2.0
+
 
 flutter:
   uses-material-design: true
