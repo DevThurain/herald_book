@@ -13,10 +13,8 @@ class _HeroesDetailPageState extends State<HeroesDetailPage> {
   Widget build(BuildContext context) {
     return ScaffoldPage(
       header: Text("Hero Details"),
-      content: Expanded(
-          child: Container(
-        color: Colors.successPrimaryColor,
-      )),
+      content: Container(
+      ),
     );
   }
 }

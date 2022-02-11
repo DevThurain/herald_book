@@ -129,11 +129,10 @@ class Hero extends StatelessWidget {
       const begin = Offset(0.0, 1.0);
       const end = Offset.zero;
       const curve = Curves.ease;
-
-      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+      var tween = Tween<double>(begin: 0.0,end: 1.0);
 
       return DrillInPageTransition(
-        animation: secondaryAnimation,
+        animation: animation,
         child: child,
       );
     },
