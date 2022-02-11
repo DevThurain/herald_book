@@ -2,8 +2,10 @@ import 'dart:html';
 
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:herald_book/src/ui/analysis/analysis_page.dart';
 import 'package:herald_book/src/ui/heros/heroes_page.dart';
 import 'package:herald_book/src/ui/items/items_page.dart';
+import 'package:herald_book/src/ui/settings/settings_page.dart';
 
 class NavigationPage extends StatefulWidget {
   const NavigationPage({Key? key}) : super(key: key);
@@ -58,10 +60,18 @@ class _NavigationPageState extends State<NavigationPage> {
                 icon: const Icon(FluentIcons.test_beaker),
                 title: const Text('Items'),
               ),
+               PaneItem(
+                icon: const Icon(FluentIcons.analytics_logo),
+                title: const Text('Analytics'),
+              ),
+               PaneItem(
+                icon: const Icon(FluentIcons.settings),
+                title: const Text('Setting'),
+              ),
             ]),
         content: NavigationBody(
           index: _currentPage,
-          children: [HeroesPage(), ItemsPage()],
+          children: const [HeroesPage(), ItemsPage(), AnalysisPage(), SettingsPage()],
         ),
       ),
     );

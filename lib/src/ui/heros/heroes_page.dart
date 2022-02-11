@@ -1,6 +1,8 @@
 import 'dart:html';
+import 'dart:ui';
 
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter/material.dart' as material;
 import 'package:herald_book/src/app_utils/base_view_model.dart';
 import 'package:herald_book/src/ui/heros/heroes_detail_page.dart';
 import 'package:herald_book/src/view_model/heroes_provider.dart';
@@ -26,7 +28,7 @@ class _HeroesPageState extends State<HeroesPage> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
+              const Text(
                 'Heroes',
                 style: TextStyle(
                   fontSize: 16.0,
@@ -44,6 +46,7 @@ class _HeroesPageState extends State<HeroesPage> {
                       items: provier.heroList!
                           .map((hero) => hero.localizedName.toString())
                           .toList(),
+                      onChanged: (value, reason) {},
                     ),
                   );
                 } else {
@@ -97,22 +100,22 @@ class _HeroesPageState extends State<HeroesPage> {
         ),
       );
     } else if (provider.state == ViewState.LOADING) {
-      return Center(
+      return const Center(
         child: ProgressRing(),
       );
     } else if (provider.state == ViewState.ERROR) {
-      return Center(
+      return const Center(
         child: Text('Error'),
       );
     } else {
-      return Center(
+      return const Center(
         child: Text('Unknown State'),
       );
     }
   }
 }
 
-class Hero extends StatelessWidget {
+class Hero extends StatefulWidget {
   const Hero({
     Key? key,
     required this.name,
@@ -122,46 +125,65 @@ class Hero extends StatelessWidget {
   final String name;
   final String imageLink;
 
-  Route _createRoute() {
-  return PageRouteBuilder(
-    pageBuilder: (context, animation, secondaryAnimation) => const HeroesDetailPage(),
-    transitionsBuilder: (context, animation, secondaryAnimation, child) {
-      const begin = Offset(0.0, 1.0);
-      const end = Offset.zero;
-      const curve = Curves.ease;
-      var tween = Tween<double>(begin: 0.0,end: 1.0);
-
-      return DrillInPageTransition(
-        animation: animation,
-        child: child,
-      );
-    },
-  );
+  @override
+  State<Hero> createState() => _HeroState();
 }
+
+class _HeroState extends State<Hero> {
+  bool enableBorder = false;
+
+  Route _createRoute() {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => const HeroesDetailPage(),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        const begin = Offset(0.0, 1.0);
+        const end = Offset.zero;
+        const curve = Curves.ease;
+        var tween = Tween<double>(begin: 0.0, end: 1.0);
+
+        return DrillInPageTransition(
+          animation: animation,
+          child: child,
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-            context,
-            _createRoute());
+    return material.InkWell(
+      onHover: (isHover) {
+        if (isHover) {
+          setState(() {
+            enableBorder = true;
+          });
+        } else {
+          setState(() {
+            enableBorder = false;
+          });
+        }
       },
-      child: Container(
+      onTap: () {
+        Navigator.push(context, _createRoute());
+      },
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             ClipRRect(
                 borderRadius: BorderRadius.all(Radius.circular(8.0)),
                 child: Image.network(
-                  "https://cdn.dota2.com/apps/dota2/images/heroes/${imageLink}_full.png",
-                  errorBuilder: ((context, error, stackTrace) => Icon(FluentIcons.photo)),
+                  "https://cdn.dota2.com/apps/dota2/images/heroes/${widget.imageLink}_full.png",
+                  fit: BoxFit.cover,
+                  errorBuilder: ((context, error, stackTrace) =>
+                      Icon(FluentIcons.photo)),
                 )),
             const SizedBox(height: 8.0),
             SizedBox(
               width: 180,
               child: Text(
-                name,
+                widget.name,
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.center,
                 style: const TextStyle(

@@ -16,7 +16,6 @@ class _ItemsPageState extends State<ItemsPage> {
         child: Text(
           'Items',
           style: TextStyle(
-            fontFamily: 'Acient',
             fontSize: 16.0,
             letterSpacing: 1.0,
             fontWeight: FontWeight.bold,
