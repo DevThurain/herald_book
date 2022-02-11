@@ -1,9 +1,8 @@
-import 'dart:html';
-import 'dart:ui';
-
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:herald_book/src/app_utils/chart_utils.dart';
 import 'package:herald_book/src/view_model/settings_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:charts_flutter/flutter.dart' as charts;
 
 class AnalysisPage extends StatefulWidget {
   const AnalysisPage({Key? key}) : super(key: key);
@@ -76,7 +75,31 @@ class _AnalysisPageState extends State<AnalysisPage> {
             SizedBox(height: 12.0),
             ChatMessageSectionView(wordList: wordList),
             SizedBox(height: 12.0),
-            
+            Row(
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Gold Per Minute',
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        letterSpacing: 1.0,
+                      ),
+                    ),
+                    SizedBox(height: 8.0),
+                    SizedBox(
+                      width: 500,
+                      height: 300,
+                      child: charts.LineChart(ChartUtils.sampleData(),
+                          defaultRenderer: new charts.LineRendererConfig(
+                              includeArea: true, stacked: true),
+                          animate: true),
+                    )
+                  ],
+                )
+              ],
+            )
           ],
         ),
       );
