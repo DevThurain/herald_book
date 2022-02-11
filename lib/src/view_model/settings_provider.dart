@@ -33,4 +33,10 @@ class SettingsProvider extends BaseViewModel {
       setState(ViewState.ERROR);
     }
   }
+
+  void unbind() {
+    playerVO = null;
+    isConnected = false;
+    setState(ViewState.NONE);
+  }
 }

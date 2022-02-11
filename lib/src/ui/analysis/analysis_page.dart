@@ -1,4 +1,9 @@
+import 'dart:html';
+import 'dart:ui';
+
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:herald_book/src/view_model/settings_provider.dart';
+import 'package:provider/provider.dart';
 
 class AnalysisPage extends StatefulWidget {
   const AnalysisPage({Key? key}) : super(key: key);
@@ -42,70 +47,51 @@ class _AnalysisPageState extends State<AnalysisPage> {
   ];
   @override
   Widget build(BuildContext context) {
-    return ScaffoldPage(
-      header: Padding(
-        padding: EdgeInsets.only(left: 12.0),
-        child: Text(
-          'Analysis',
-          style: TextStyle(
-            fontSize: 16.0,
-            letterSpacing: 1.0,
-            fontWeight: FontWeight.bold,
+    return Consumer<SettingsProvider>(builder: (context, provider, child) {
+      return ScaffoldPage(
+        header: Padding(
+          padding: EdgeInsets.only(left: 12.0),
+          child: Text(
+            'Analysis',
+            style: TextStyle(
+              fontSize: 16.0,
+              letterSpacing: 1.0,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
-      ),
-      content: Padding(
+        content: handleWidget(provider),
+      );
+    });
+  }
+
+  Widget handleWidget(SettingsProvider provider) {
+    if (provider.isConnected) {
+      return Padding(
         padding: const EdgeInsets.only(top: 12.0, left: 12.0, right: 12.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ProfileSectionView(),
             SizedBox(height: 12.0),
-            Text(
-              'Favourite Chat Messages',
-              style: TextStyle(
-                fontSize: 16.0,
-                letterSpacing: 1.0,
-              ),
-            ),
-            SizedBox(height: 8.0),
-            Wrap(
-              children: wordList.map((word) {
-                return Padding(
-                  padding: const EdgeInsets.all(2.0),
-                  child: Chip.selected(
-                      text: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                    child: Row(
-                      children: [
-                        Text(word),
-                        SizedBox(width: 12.0),
-                        Container(
-                          padding: EdgeInsets.all(2.0),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.white,
-                          ),
-                          child: Center(
-                            child: Text(
-                              '11',
-                              style: TextStyle(
-                                letterSpacing: 1.0,
-                                color: Colors.blue,
-                              ),
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  )),
-                );
-              }).toList(),
-            )
+            ChatMessageSectionView(wordList: wordList),
+            SizedBox(height: 12.0),
+            
           ],
         ),
-      ),
-    );
+      );
+    } else {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset('analysis_intro.gif', width: 100, height: 100),
+            SizedBox(height: 12.0),
+            Text('Please bind your id in setting.')
+          ],
+        ),
+      );
+    }
   }
 }
 
@@ -170,6 +156,61 @@ class ProfileSectionView extends StatelessWidget {
               ],
             )
           ],
+        )
+      ],
+    );
+  }
+}
+
+class ChatMessageSectionView extends StatelessWidget {
+  const ChatMessageSectionView({Key? key, required this.wordList}) : super(key: key);
+  final List<String> wordList;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Favourite Chat Messages',
+          style: TextStyle(
+            fontSize: 16.0,
+            letterSpacing: 1.0,
+          ),
+        ),
+        SizedBox(height: 8.0),
+        Wrap(
+          children: wordList.map((word) {
+            return Padding(
+              padding: const EdgeInsets.all(2.0),
+              child: Chip.selected(
+                  text: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                child: Row(
+                  children: [
+                    Text(word),
+                    SizedBox(width: 12.0),
+                    Container(
+                      padding: EdgeInsets.all(2.0),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.white,
+                      ),
+                      child: Center(
+                        child: Text(
+                          '11',
+                          style: TextStyle(
+                            letterSpacing: 1.0,
+                            color: Colors.blue,
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              )),
+            );
+          }).toList(),
         )
       ],
     );

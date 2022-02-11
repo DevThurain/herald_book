@@ -18,13 +18,6 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   void initState() {
     _settingsProvider = locator<SettingsProvider>();
-    if (_settingsProvider.isConnected) {
-      setState(() {
-        idController.text =
-            _settingsProvider.playerVO!.profile?.accountId.toString() ?? 'no data';
-      });
-    }
-
     super.initState();
   }
 
@@ -32,6 +25,10 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return Builder(builder: (context) {
       return Consumer<SettingsProvider>(builder: (context, provider, child) {
+        if (provider.isConnected) {
+          idController.text = provider.playerVO?.profile?.accountId.toString() ?? '';
+        }
+
         return ScaffoldPage(
           header: Padding(
             padding: EdgeInsets.only(left: 12.0),
@@ -66,12 +63,21 @@ class _SettingsPageState extends State<SettingsPage> {
                   SizedBox(
                     height: 30.0,
                     child: Button(
-                      child: Center(child: Text('Bind')),
+                      child: Center(
+                          child: !provider.isConnected
+                              ? Text('Bind')
+                              : Text(
+                                  'Remove',
+                                  style: TextStyle(color: Colors.errorPrimaryColor),
+                                )),
                       onPressed: !provider.isConnected
                           ? () {
                               provider.bind(idController.text);
                             }
-                          : null,
+                          : () {
+                              provider.unbind();
+                              idController.text = '';
+                            },
                     ),
                   )
                 ],

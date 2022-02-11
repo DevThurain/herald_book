@@ -4,11 +4,7 @@ import 'package:herald_book/src/app_utils/locator.dart';
 import 'package:herald_book/src/ui/heros/heroes_detail_page.dart';
 import 'package:herald_book/src/ui/navigation/navigation_page.dart';
 import 'package:herald_book/src/view_model/settings_provider.dart';
-
-import 'sample_feature/sample_item_details_view.dart';
-import 'sample_feature/sample_item_list_view.dart';
 import 'settings/settings_controller.dart';
-import 'settings/settings_view.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:provider/provider.dart';
 
