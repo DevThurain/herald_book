@@ -1,5 +1,8 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:herald_book/src/app_utils/chart_utils.dart';
+import 'package:herald_book/src/app_utils/locator.dart';
+import 'package:herald_book/src/network/models/vos/message_vo.dart';
+import 'package:herald_book/src/view_model/analysis_provider.dart';
 import 'package:herald_book/src/view_model/settings_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -44,28 +47,43 @@ class _AnalysisPageState extends State<AnalysisPage> {
     'run',
     'noobs'
   ];
+
+  late AnalysisProvider _analysisProvider;
+
   @override
-  Widget build(BuildContext context) {
-    return Consumer<SettingsProvider>(builder: (context, provider, child) {
-      return ScaffoldPage(
-        header: Padding(
-          padding: EdgeInsets.only(left: 12.0),
-          child: Text(
-            'Analysis',
-            style: TextStyle(
-              fontSize: 16.0,
-              letterSpacing: 1.0,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-        content: handleWidget(provider),
-      );
-    });
+  void initState() {
+    _analysisProvider = locator<AnalysisProvider>();
+    super.initState();
   }
 
-  Widget handleWidget(SettingsProvider provider) {
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (context) => _analysisProvider,
+      child: Consumer<SettingsProvider>(builder: (context, provider, child) {
+        return ScaffoldPage(
+          header: Padding(
+            padding: EdgeInsets.only(left: 12.0),
+            child: Text(
+              'Analysis',
+              style: TextStyle(
+                fontSize: 16.0,
+                letterSpacing: 1.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          content: handleWidget(provider, _analysisProvider),
+        );
+      }),
+    );
+  }
+
+  Widget handleWidget(SettingsProvider provider, AnalysisProvider analysisProvider) {
     if (provider.isConnected) {
+      analysisProvider.getWinLoseScore(provider.playerVO?.profile?.accountId! ?? 0);
+      analysisProvider.getWrodList(provider.playerVO?.profile?.accountId! ?? 0);
+
       return Padding(
         padding: const EdgeInsets.only(top: 12.0, left: 12.0, right: 12.0),
         child: Column(
@@ -73,10 +91,16 @@ class _AnalysisPageState extends State<AnalysisPage> {
           children: [
             ProfileSectionView(
               name: provider.playerVO?.profile?.personaname.toString() ?? '',
-              imageLink:  provider.playerVO?.profile?.avatarfull.toString() ?? '',
+              imageLink: provider.playerVO?.profile?.avatarfull.toString() ?? '',
             ),
             SizedBox(height: 12.0),
-            ChatMessageSectionView(wordList: wordList),
+            Consumer<AnalysisProvider>(builder: (context, provider, child) {
+              if (provider.messageList.isNotEmpty)
+                return ChatMessageSectionView(
+                    messageList: analysisProvider.messageList);
+              else
+                return SizedBox();
+            }),
             SizedBox(height: 16.0),
             Row(
               children: [
@@ -92,7 +116,7 @@ class _AnalysisPageState extends State<AnalysisPage> {
                     ),
                     SizedBox(height: 8.0),
                     Container(
-                      width: 500,
+                      width: MediaQuery.of(context).size.width * 0.5,
                       height: 200,
                       child: LineChart(ChartUtils().mainData()),
                     )
@@ -160,29 +184,12 @@ class ProfileSectionView extends StatelessWidget {
               ),
             ),
             SizedBox(height: 8.0),
-            Row(
-              children: [
-                Container(width: 8, height: 8, color: Colors.successPrimaryColor),
-                SizedBox(width: 4),
-                Text(
-                  '100',
-                  style: TextStyle(
-                    fontSize: 16.0,
-                    letterSpacing: 1.0,
-                  ),
-                ),
-                SizedBox(width: 12.0),
-                Container(width: 8, height: 8, color: Colors.errorPrimaryColor),
-                SizedBox(width: 4),
-                Text(
-                  '90',
-                  style: TextStyle(
-                    fontSize: 16.0,
-                    letterSpacing: 1.0,
-                  ),
-                ),
-              ],
-            )
+            Consumer<AnalysisProvider>(builder: (context, analysisProvider, child) {
+              return WinLoseScoreSection(
+                win: analysisProvider.winLoseVO?.win.toString() ?? '-',
+                lose: analysisProvider.winLoseVO?.lose.toString() ?? '-',
+              );
+            })
           ],
         )
       ],
@@ -190,9 +197,47 @@ class ProfileSectionView extends StatelessWidget {
   }
 }
 
+class WinLoseScoreSection extends StatelessWidget {
+  WinLoseScoreSection({
+    Key? key,
+    required this.win,
+    required this.lose,
+  }) : super(key: key);
+
+  String win;
+  String lose;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Container(width: 8, height: 8, color: Colors.successPrimaryColor),
+        SizedBox(width: 4),
+        Text(
+          win,
+          style: TextStyle(
+            fontSize: 16.0,
+            letterSpacing: 1.0,
+          ),
+        ),
+        SizedBox(width: 12.0),
+        Container(width: 8, height: 8, color: Colors.errorPrimaryColor),
+        SizedBox(width: 4),
+        Text(
+          lose,
+          style: TextStyle(
+            fontSize: 16.0,
+            letterSpacing: 1.0,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 class ChatMessageSectionView extends StatelessWidget {
-  const ChatMessageSectionView({Key? key, required this.wordList}) : super(key: key);
-  final List<String> wordList;
+  const ChatMessageSectionView({Key? key, required this.messageList}) : super(key: key);
+  final List<MessageVO> messageList;
 
   @override
   Widget build(BuildContext context) {
@@ -208,7 +253,7 @@ class ChatMessageSectionView extends StatelessWidget {
         ),
         SizedBox(height: 8.0),
         Wrap(
-          children: wordList.map((word) {
+          children: messageList.map((message) {
             return Padding(
               padding: const EdgeInsets.all(2.0),
               child: Chip.selected(
@@ -216,17 +261,18 @@ class ChatMessageSectionView extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 4.0),
                 child: Row(
                   children: [
-                    Text(word),
+                    Text(message.word),
                     SizedBox(width: 12.0),
                     Container(
-                      padding: EdgeInsets.all(2.0),
+                      width: 25,
+                      height: 25,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: Colors.white,
                       ),
                       child: Center(
                         child: Text(
-                          '11',
+                          message.count,
                           style: TextStyle(
                             letterSpacing: 1.0,
                             color: Colors.blue,
