@@ -50,11 +50,7 @@ class MyApp extends StatelessWidget {
               Locale('en', ''), // English, no country code
             ],
 
-            theme: ThemeData(
-              focusTheme: const FocusThemeData(
-                glowFactor: 4.0,
-              ),
-            ),
+            theme: ThemeData(),
             // Use AppLocalizations to configure the correct application title
             // depending on the user's locale.
             //
@@ -67,7 +63,7 @@ class MyApp extends StatelessWidget {
             // preferred ThemeMode (light, dark, or system default) from the
             // SettingsController to display the correct theme.
             // theme: ThemeData(),
-            // darkTheme: ThemeData.dark(),
+             darkTheme: ThemeData.dark(),
 
 
             // Define a function to handle named routes in order to support

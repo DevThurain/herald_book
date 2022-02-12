@@ -2,7 +2,7 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:herald_book/src/app_utils/chart_utils.dart';
 import 'package:herald_book/src/view_model/settings_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:charts_flutter/flutter.dart' as charts;
+import 'package:fl_chart/fl_chart.dart';
 
 class AnalysisPage extends StatefulWidget {
   const AnalysisPage({Key? key}) : super(key: key);
@@ -71,30 +71,30 @@ class _AnalysisPageState extends State<AnalysisPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ProfileSectionView(),
+            ProfileSectionView(
+              name: provider.playerVO?.profile?.personaname.toString() ?? '',
+              imageLink:  provider.playerVO?.profile?.avatarfull.toString() ?? '',
+            ),
             SizedBox(height: 12.0),
             ChatMessageSectionView(wordList: wordList),
-            SizedBox(height: 12.0),
+            SizedBox(height: 16.0),
             Row(
               children: [
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Gold Per Minute',
+                      'Recent Matches',
                       style: TextStyle(
                         fontSize: 16.0,
                         letterSpacing: 1.0,
                       ),
                     ),
                     SizedBox(height: 8.0),
-                    SizedBox(
+                    Container(
                       width: 500,
-                      height: 300,
-                      child: charts.LineChart(ChartUtils.sampleData(),
-                          defaultRenderer: new charts.LineRendererConfig(
-                              includeArea: true, stacked: true),
-                          animate: true),
+                      height: 200,
+                      child: LineChart(ChartUtils().mainData()),
                     )
                   ],
                 )
@@ -121,7 +121,12 @@ class _AnalysisPageState extends State<AnalysisPage> {
 class ProfileSectionView extends StatelessWidget {
   const ProfileSectionView({
     Key? key,
+    required this.name,
+    required this.imageLink,
   }) : super(key: key);
+
+  final String imageLink;
+  final String name;
 
   @override
   Widget build(BuildContext context) {
@@ -130,7 +135,7 @@ class ProfileSectionView extends StatelessWidget {
         ClipRRect(
             borderRadius: BorderRadius.all(Radius.circular(10.0)),
             child: Image.network(
-              'https://images.unsplash.com/photo-1644417076004-591270852df9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw2OHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=60',
+              imageLink,
               width: MediaQuery.of(context).size.width * 0.1,
               height: MediaQuery.of(context).size.width * 0.1,
               fit: BoxFit.cover,
@@ -140,7 +145,7 @@ class ProfileSectionView extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Nightt Sama',
+              name,
               style: TextStyle(
                 fontSize: 16.0,
                 letterSpacing: 1.0,

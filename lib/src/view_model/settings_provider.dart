@@ -3,7 +3,7 @@ import 'package:herald_book/src/network/models/vos/player_vo.dart';
 import 'package:herald_book/src/network/repository.dart';
 
 class SettingsProvider extends BaseViewModel {
-  bool isConnected = true;
+  bool isConnected = false;
   PlayerVO? playerVO;
 
   final RepositoryImpl _repositoryImpl = RepositoryImpl();
