@@ -1,4 +1,5 @@
 import 'package:herald_book/src/network/models/vos/hero_vo.dart';
+import 'package:herald_book/src/network/models/vos/match_vo.dart';
 import 'package:herald_book/src/network/models/vos/player_vo.dart';
 import 'package:herald_book/src/network/models/vos/win_lose_vo.dart';
 import 'package:herald_book/src/network/models/vos/word_list_vo.dart';
@@ -9,6 +10,7 @@ abstract class Repository {
   Future<PlayerVO> getPlayerById(int id);
   Future<WinLoseVO> getWinLoseScore(int id);
   Future<String> getPlayerWordList(int id);
+  Future<List<MatchVO>> getMatchList(int id);
 }
 
 class RepositoryImpl implements Repository {
@@ -32,5 +34,10 @@ class RepositoryImpl implements Repository {
   @override
   Future<WinLoseVO> getWinLoseScore(int id) {
     return _mSource.publicApi().getWinLoseScore(id);
+  }
+
+  @override
+  Future<List<MatchVO>> getMatchList(int id) {
+    return _mSource.publicApi().getMatchList(id);
   }
 }

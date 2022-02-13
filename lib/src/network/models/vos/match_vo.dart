@@ -7,11 +7,9 @@ class MatchVO {
   int? lobbyType;
   int? heroId;
   int? startTime;
-  Null? version;
   int? kills;
   int? deaths;
   int? assists;
-  Null? skill;
   int? leaverStatus;
   int? partySize;
 
@@ -24,11 +22,9 @@ class MatchVO {
       this.lobbyType,
       this.heroId,
       this.startTime,
-      this.version,
       this.kills,
       this.deaths,
       this.assists,
-      this.skill,
       this.leaverStatus,
       this.partySize});
 
@@ -41,11 +37,9 @@ class MatchVO {
     lobbyType = json['lobby_type'];
     heroId = json['hero_id'];
     startTime = json['start_time'];
-    version = json['version'];
     kills = json['kills'];
     deaths = json['deaths'];
     assists = json['assists'];
-    skill = json['skill'];
     leaverStatus = json['leaver_status'];
     partySize = json['party_size'];
   }
@@ -60,11 +54,9 @@ class MatchVO {
     data['lobby_type'] = this.lobbyType;
     data['hero_id'] = this.heroId;
     data['start_time'] = this.startTime;
-    data['version'] = this.version;
     data['kills'] = this.kills;
     data['deaths'] = this.deaths;
     data['assists'] = this.assists;
-    data['skill'] = this.skill;
     data['leaver_status'] = this.leaverStatus;
     data['party_size'] = this.partySize;
     return data;

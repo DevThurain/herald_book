@@ -15,39 +15,6 @@ class AnalysisPage extends StatefulWidget {
 }
 
 class _AnalysisPageState extends State<AnalysisPage> {
-  final wordList = [
-    'ggez',
-    'thanks',
-    'help',
-    'dog',
-    'run',
-    'noobs',
-    'ggez',
-    'thanks',
-    'help',
-    'dog',
-    'run',
-    'noobs',
-    'ggez',
-    'thanks',
-    'help',
-    'dog',
-    'run',
-    'noobs',
-    'ggez',
-    'thanks',
-    'help',
-    'dog',
-    'run',
-    'noobs',
-    'ggez',
-    'thanks',
-    'help',
-    'dog',
-    'run',
-    'noobs'
-  ];
-
   late AnalysisProvider _analysisProvider;
 
   @override
@@ -83,48 +50,57 @@ class _AnalysisPageState extends State<AnalysisPage> {
     if (provider.isConnected) {
       analysisProvider.getWinLoseScore(provider.playerVO?.profile?.accountId! ?? 0);
       analysisProvider.getWrodList(provider.playerVO?.profile?.accountId! ?? 0);
+      analysisProvider.getMatchList(provider.playerVO?.profile?.accountId! ?? 0);
 
       return Padding(
         padding: const EdgeInsets.only(top: 12.0, left: 12.0, right: 12.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ProfileSectionView(
-              name: provider.playerVO?.profile?.personaname.toString() ?? '',
-              imageLink: provider.playerVO?.profile?.avatarfull.toString() ?? '',
-            ),
-            SizedBox(height: 12.0),
-            Consumer<AnalysisProvider>(builder: (context, provider, child) {
-              if (provider.messageList.isNotEmpty)
-                return ChatMessageSectionView(
-                    messageList: analysisProvider.messageList);
-              else
-                return SizedBox();
-            }),
-            SizedBox(height: 16.0),
-            Row(
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Recent Matches',
-                      style: TextStyle(
-                        fontSize: 16.0,
-                        letterSpacing: 1.0,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ProfileSectionView(
+                name: provider.playerVO?.profile?.personaname.toString() ?? '',
+                imageLink: provider.playerVO?.profile?.avatarfull.toString() ?? '',
+              ),
+              SizedBox(height: 12.0),
+              Consumer<AnalysisProvider>(builder: (context, provider, child) {
+                if (provider.messageList.isNotEmpty) {
+                  return ChatMessageSectionView(messageList: analysisProvider.messageList);
+                } else {
+                  return SizedBox();
+                }
+              }),
+              SizedBox(height: 16.0),
+              Row(
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Recent Matches (WL Graph)',
+                        style: TextStyle(
+                          fontSize: 16.0,
+                          letterSpacing: 1.0,
+                        ),
                       ),
-                    ),
-                    SizedBox(height: 8.0),
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.5,
-                      height: 200,
-                      child: LineChart(ChartUtils().mainData()),
-                    )
-                  ],
-                )
-              ],
-            )
-          ],
+                      SizedBox(height: 8.0),
+                      Consumer<AnalysisProvider>(builder: (context, provider, child) {
+                        if (provider.spotList.isNotEmpty) {
+                          return Container(
+                            width: MediaQuery.of(context).size.width * 0.7,
+                            height: 200,
+                            child: LineChart(ChartUtils().mainData(provider.spotList)),
+                          );
+                        } else {
+                          return SizedBox();
+                        }
+                      })
+                    ],
+                  )
+                ],
+              )
+            ],
+          ),
         ),
       );
     } else {
@@ -262,12 +238,11 @@ class ChatMessageSectionView extends StatelessWidget {
                 child: Row(
                   children: [
                     Text(message.word),
-                    SizedBox(width: 12.0),
+                    SizedBox(width: 18.0),
                     Container(
-                      width: 25,
-                      height: 25,
+                      padding: EdgeInsets.symmetric(horizontal: 4),
                       decoration: BoxDecoration(
-                        shape: BoxShape.circle,
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
                         color: Colors.white,
                       ),
                       child: Center(

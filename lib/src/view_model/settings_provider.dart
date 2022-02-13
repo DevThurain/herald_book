@@ -18,18 +18,22 @@ class SettingsProvider extends BaseViewModel {
     try {
       _repositoryImpl.getPlayerById(numberId).then((player) {
         playerVO = player;
-        if (playerVO!.profile != null) {
+        if (playerVO?.profile != null) {
           isConnected = true;
           setState(ViewState.COMPLETE);
         } else {
           isConnected = false;
           setState(ViewState.ERROR);
         }
+       
       }).onError((error, stackTrace) {
         isConnected = false;
+        print(error.toString());
         setState(ViewState.ERROR);
       });
     } catch (e) {
+      print(e.toString());
+
       setState(ViewState.ERROR);
     }
   }
