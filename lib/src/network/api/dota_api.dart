@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:herald_book/src/network/models/vos/hero_vo.dart';
+import 'package:herald_book/src/network/models/vos/match_vo.dart';
 import 'package:herald_book/src/network/models/vos/player_vo.dart';
 import 'package:herald_book/src/network/models/vos/win_lose_vo.dart';
 import 'package:herald_book/src/network/models/vos/word_list_vo.dart';
@@ -28,6 +29,11 @@ abstract class DotaAPI {
 
   @GET("/players/{id}/wordcloud")
   Future<String> getWordList(
+    @Path("id") int id,
+  );
+
+  @GET("/players/{id}/matches")
+  Future<List<MatchVO>> getMatchList(
     @Path("id") int id,
   );
 }

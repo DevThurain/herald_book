@@ -9,7 +9,7 @@ class JsonUtils {
     List<MessageVO> data = [];
     mapValue['all_word_counts'].forEach((key, value) {
       data.add(MessageVO(word: key.toString(), count: value.toString()));
-      print('$key ====> $value');
+      //print('$key ====> $value');
     });
     data.sort(((a, b) => int.parse(a.count).compareTo(int.parse(b.count))));
     return data.length > 30 ? data.reversed.take(30).toList() : data.reversed.toList();
